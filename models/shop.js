@@ -6,6 +6,6 @@ exports.buy = (items, currency) => {
     total: 0,
     currency: 0,
   };
-  
+
   return order;
 };

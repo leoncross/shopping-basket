@@ -5,20 +5,18 @@ const { expect } = chai;
 const shop = require('../../../models/shop');
 
 describe('Shop Model', () => {
-  const order = {
-    subtotal: 0,
-    discounts: [],
-    discountAmt: 0,
-    total: 0,
-    currency: 0,
-  };
-
   describe('#buy', () => {
-    it('takes items and currency as arguments and returns args unchanged', () => {
+    it('returns an object with expected keys', () => {
       const items = ['apple', 'milk'];
       const currency = 'GBP';
 
-      expect(shop.buy(items, currency)).to.deep.equal(order);
+      const order = shop.buy(items, currency);
+
+      expect(order).to.have.deep.property('subtotal');
+      expect(order).to.have.deep.property('discounts');
+      expect(order).to.have.deep.property('discountAmt');
+      expect(order).to.have.deep.property('total');
+      expect(order).to.have.deep.property('currency');
     });
   });
 });

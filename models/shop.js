@@ -1,3 +1,6 @@
+require('dotenv').config();
+const fetch = require('node-fetch');
+
 const catalog = {
   apple: {
     price: 1,
@@ -42,6 +45,7 @@ const handleItems = (items) => {
     subtotal: 0,
     discountAmt: 0,
     discounts: [],
+    total: 0,
   };
 
   items.forEach((item) => {
@@ -60,10 +64,32 @@ const handleItems = (items) => {
   return order;
 };
 
-exports.buy = (items, currency) => {
-  const order = handleItems(items);
+const getConversionRate = async (currency) => {
+  const url = `http://apilayer.net/api/live?access_key=${process.env.API_KEY}&currencies=${currency}&format=1`;
 
-  order.total = 0;
-  order.currency = currency;
-  return order;
+  return fetch(url)
+    .then(data => data.json())
+    .then((data) => {
+      const currencyFormatted = `USD${currency}`;
+      return data.quotes[currencyFormatted];
+    });
+};
+
+const convertOrder = async (order, currency) => {
+  const convertedOrder = order;
+  const conversionRate = await getConversionRate(currency);
+
+  convertedOrder.subtotal *= conversionRate;
+  convertedOrder.discountAmt *= conversionRate;
+  convertedOrder.total *= conversionRate;
+  convertedOrder.currency = currency;
+
+  return convertedOrder;
+};
+
+exports.buy = async (items, currency) => {
+  const order = handleItems(items);
+  const convertedOrder = await convertOrder(order, currency);
+
+  return convertedOrder;
 };

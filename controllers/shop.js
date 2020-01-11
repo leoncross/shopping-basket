@@ -1,4 +1,4 @@
-const shopModel = require('../models/shop');
+const shopModel = require('../models/shop/shop');
 
 exports.buy = async (req, res) => {
   const { items, currency } = req.body;

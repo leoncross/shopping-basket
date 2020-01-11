@@ -3,7 +3,7 @@ const nock = require('nock');
 
 const { expect } = chai;
 
-const shop = require('../../../models/shop');
+const shop = require('../../../models/shop/shop');
 const { getUrl, usdResponse, gbpResponse } = require('../../helpers');
 
 describe('Shop Model', () => {

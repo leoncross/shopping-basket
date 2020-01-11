@@ -131,5 +131,35 @@ describe('Shop Model', () => {
         });
       });
     });
+    context('argument validation', () => {
+      it('ensures item arguments are valid', async () => {
+        items = ['potato'];
+        currency = 'GBP';
+
+        scope = mockCurrencyRequest(currency, gbpResponse);
+
+        order = await shop.buy(items, currency);
+
+        expect(scope.isDone());
+        expect(order).to.deep.equal({
+          errorMessage: 'invalid argument provided',
+          errorType: 'BAD_REQUEST',
+        });
+      });
+      it('ensures currency argument is valid', async () => {
+        items = ['apple'];
+        currency = 'na';
+
+        scope = mockCurrencyRequest(currency, gbpResponse);
+
+        order = await shop.buy(items, currency);
+
+        expect(scope.isDone());
+        expect(order).to.deep.equal({
+          errorMessage: 'invalid argument provided',
+          errorType: 'BAD_REQUEST',
+        });
+      });
+    });
   });
 });

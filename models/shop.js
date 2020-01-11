@@ -24,6 +24,35 @@ const catalog = {
   soup: { price: 0.65 },
 };
 
+const acceptedCurrencies = {
+  GBP: 'GBP',
+  EUR: 'EUR',
+  USD: 'USD',
+};
+
+const argumentValidation = (items, currency) => {
+  let isValid = true;
+
+  items.forEach((item) => {
+    if (!catalog[item]) {
+      isValid = false;
+    }
+  });
+
+  if (!Object.prototype.hasOwnProperty.call(acceptedCurrencies, currency)) {
+    isValid = false;
+  }
+
+  const errorMsg = {
+    errorMessage: 'invalid argument provided',
+    errorType: 'BAD_REQUEST',
+  };
+  return {
+    isValid,
+    errorMsg,
+  };
+};
+
 const handleDiscounts = (order, item) => {
   if (order[item].count % catalog[item].offer.minPurchase === 0) {
     const orderDiscounted = order;
@@ -104,8 +133,12 @@ const formatOrder = (order) => {
 };
 
 exports.buy = async (items, currency) => {
+  const { isValid, errorMsg } = argumentValidation(items, currency);
+  if (!isValid) return errorMsg;
+
   const order = handleItems(items);
   const convertedOrder = await convertOrder(order, currency);
   const finalisedOrder = formatOrder(convertedOrder);
+
   return finalisedOrder;
 };

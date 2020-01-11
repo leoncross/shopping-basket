@@ -53,8 +53,7 @@ describe('Shop Model', () => {
           subtotal: 0.8,
           discountAmt: 0,
           discounts: [],
-          bread: { count: 1, price: 0.8 },
-          total: 0,
+          total: 0.8,
           currency: 'USD',
         });
       });
@@ -71,8 +70,7 @@ describe('Shop Model', () => {
           subtotal: 1.3,
           discountAmt: 0,
           discounts: [],
-          soup: { count: 2, price: 1.3 },
-          total: 0,
+          total: 1.3,
           currency: 'USD',
         });
       });
@@ -89,11 +87,10 @@ describe('Shop Model', () => {
 
         expect(scope.isDone());
         expect(order).to.deep.equal({
-          subtotal: 3.4499999999999997,
+          subtotal: 3.45,
           discountAmt: 0.5,
           discounts: ['buy 3 milks, get 50c off'],
-          milk: { count: 3, price: 3.4499999999999997 },
-          total: 0,
+          total: 2.95,
           currency: 'USD',
         });
       });
@@ -109,8 +106,7 @@ describe('Shop Model', () => {
           subtotal: 0.65,
           discountAmt: 0,
           discounts: [],
-          soup: { count: 1, price: 0.65 },
-          total: 0,
+          total: 0.65,
           currency: 'USD',
         });
         expect(scope.isDone());
@@ -127,11 +123,10 @@ describe('Shop Model', () => {
 
         expect(scope.isDone());
         expect(order).to.deep.equal({
-          subtotal: 2.6434417499999996,
-          discountAmt: 0.3831075,
+          subtotal: 2.64,
+          discountAmt: 0.38,
           discounts: ['buy 3 milks, get 50c off'],
-          milk: { count: 3, price: 3.4499999999999997 },
-          total: 0,
+          total: 2.26,
           currency: 'GBP',
         });
       });

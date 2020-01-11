@@ -87,9 +87,25 @@ const convertOrder = async (order, currency) => {
   return convertedOrder;
 };
 
+const formatOrder = (order) => {
+  const subtotal = +order.subtotal.toFixed(2);
+  const { discounts } = order;
+  const discountAmt = +order.discountAmt.toFixed(2);
+  const total = +(order.subtotal - order.discountAmt).toFixed(2);
+  const { currency } = order;
+
+  return {
+    subtotal,
+    discounts,
+    discountAmt,
+    total,
+    currency,
+  };
+};
+
 exports.buy = async (items, currency) => {
   const order = handleItems(items);
   const convertedOrder = await convertOrder(order, currency);
-
-  return convertedOrder;
+  const finalisedOrder = formatOrder(convertedOrder);
+  return finalisedOrder;
 };

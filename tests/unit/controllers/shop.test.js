@@ -45,16 +45,16 @@ describe('Shop controller', () => {
 
       expect(shopModelBuyStub).calledOnceWith(items, currency);
     });
-    it('passes back returned object from shopModel', () => {
-      items = ['milk'];
-      currency = 'GBP';
+    it('passes back returned object from shopModel', async () => {
+      items = ['bread'];
+      currency = 'USD';
 
       order = {
-        subtotal: 0,
-        discounts: [],
+        subtotal: 0.8,
         discountAmt: 0,
-        total: 0,
-        currency: 0,
+        discounts: [],
+        total: 0.8,
+        currency: 'USD',
       };
 
       req.body = {
@@ -64,7 +64,7 @@ describe('Shop controller', () => {
 
       shopModelBuyStub.returns(order);
 
-      shop.buy(req, res);
+      await shop.buy(req, res);
 
       expect(res.json).calledOnceWith(order);
     });

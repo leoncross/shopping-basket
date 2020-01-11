@@ -4,16 +4,9 @@ const nock = require('nock');
 const { expect } = chai;
 
 const shop = require('../../../models/shop/shop');
-const { getUrl, usdResponse, gbpResponse } = require('../../helpers');
+const { mockCurrencyRequest, usdResponse, gbpResponse } = require('../../helpers');
 
 describe('Shop Model', () => {
-  const mockCurrencyRequest = (currency, response) => {
-    const url = getUrl(currency);
-    return nock('http://apilayer.net')
-      .get(url)
-      .reply(200, response);
-  };
-
   let items;
   let currency;
   let order;
@@ -142,8 +135,10 @@ describe('Shop Model', () => {
 
         expect(scope.isDone());
         expect(order).to.deep.equal({
-          errorMessage: 'invalid argument provided',
-          errorType: 'BAD_REQUEST',
+          error: {
+            errorMessage: 'invalid argument provided',
+            errorType: 'BAD_REQUEST',
+          },
         });
       });
       it('ensures currency argument is valid', async () => {
@@ -156,8 +151,10 @@ describe('Shop Model', () => {
 
         expect(scope.isDone());
         expect(order).to.deep.equal({
-          errorMessage: 'invalid argument provided',
-          errorType: 'BAD_REQUEST',
+          error: {
+            errorMessage: 'invalid argument provided',
+            errorType: 'BAD_REQUEST',
+          },
         });
       });
     });

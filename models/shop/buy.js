@@ -44,8 +44,10 @@ const argumentValidation = (items, currency) => {
   }
 
   const errorMsg = {
-    errorMessage: 'invalid argument provided',
-    errorType: 'BAD_REQUEST',
+    error: {
+      errorMessage: 'invalid argument provided',
+      errorType: 'BAD_REQUEST',
+    },
   };
   return {
     isValid,

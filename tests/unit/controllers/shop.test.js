@@ -13,6 +13,7 @@ describe('Shop controller', () => {
 
   let items;
   let currency;
+  let order;
 
   let shopModelBuyStub;
 
@@ -31,17 +32,6 @@ describe('Shop controller', () => {
   });
 
   describe('#buy', () => {
-    it('returns in json whatever is passed to the request body', () => {
-      req.body = {
-        items,
-        currency,
-      };
-
-      shop.buy(req, res);
-
-      expect(res.json).calledOnceWith(req.body);
-    });
-
     it('calls buy on shopModel', () => {
       items = ['apple', 'milk'];
       currency = 'GBP';
@@ -54,6 +44,29 @@ describe('Shop controller', () => {
       shop.buy(req, res);
 
       expect(shopModelBuyStub).calledOnceWith(items, currency);
+    });
+    it('passes back returned object from shopModel', () => {
+      items = ['milk'];
+      currency = 'GBP';
+
+      order = {
+        subtotal: 0,
+        discounts: [],
+        discountAmt: 0,
+        total: 0,
+        currency: 0,
+      };
+
+      req.body = {
+        items,
+        currency,
+      };
+
+      shopModelBuyStub.returns(order);
+
+      shop.buy(req, res);
+
+      expect(res.json).calledOnceWith(order);
     });
   });
 });

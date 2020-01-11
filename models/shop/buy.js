@@ -61,10 +61,10 @@ const handleDiscounts = (order, item) => {
     orderDiscounted.discounts.push(catalog[item].offer.name);
 
     if (catalog[item].offer.type === 'fixed') {
-      orderDiscounted.discountAmt = catalog[item].offer.amountOff;
+      orderDiscounted.discountAmt += catalog[item].offer.amountOff;
     }
     if (catalog[item].offer.type === 'percentage') {
-      orderDiscounted.discountAmt = order[item].price * catalog[item].offer.amountOff;
+      orderDiscounted.discountAmt += catalog[item].price * catalog[item].offer.amountOff;
     }
     return orderDiscounted;
   }
@@ -90,6 +90,8 @@ const handleItems = (items) => {
     if (catalog[item].offer) {
       order = handleDiscounts(order, item);
     }
+
+    // console.log(order);
   });
 
   return order;

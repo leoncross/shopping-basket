@@ -6,7 +6,7 @@ const { expect } = chai;
 const shop = require('../../../models/shop/shop');
 const { mockCurrencyRequest, usdResponse, gbpResponse } = require('../../helpers');
 
-describe('Shop Model', () => {
+describe('Shop model', () => {
   let items;
   let currency;
   let order;

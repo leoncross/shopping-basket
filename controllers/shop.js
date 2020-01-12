@@ -1,10 +1,12 @@
 const shopModel = require('../models/shop/shop');
 
 exports.buy = async (req, res) => {
-  const { items, currency } = req.body;
-
-  const order = await shopModel.buy(items, currency);
-
-  res.status(200);
-  res.json(order);
+  try {
+    const order = await shopModel.buy(req.body);
+    res.status(200);
+    res.json(order);
+  } catch (err) {
+    res.status(err.error.httpStatus);
+    res.json(err);
+  }
 };

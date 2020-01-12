@@ -11,6 +11,7 @@ describe('Shop Model', () => {
   let currency;
   let order;
   let scope;
+  let args;
 
   afterEach(() => {
     nock.cleanAll();
@@ -20,10 +21,10 @@ describe('Shop Model', () => {
     it('returns an object with expected keys', async () => {
       items = ['apple', 'milk'];
       currency = 'USD';
-
+      args = { items, currency };
       scope = mockCurrencyRequest(currency, usdResponse);
 
-      order = await shop.buy(items, currency);
+      order = await shop.buy(args);
 
       expect(order).to.have.deep.property('subtotal');
       expect(order).to.have.deep.property('discounts');
@@ -36,10 +37,11 @@ describe('Shop Model', () => {
       it('iterates through items against catalog and updates order details', async () => {
         items = ['bread'];
         currency = 'USD';
+        args = { items, currency };
 
         scope = mockCurrencyRequest(currency, usdResponse);
 
-        order = await shop.buy(items, currency);
+        order = await shop.buy(args);
 
         expect(scope.isDone());
         expect(order).to.deep.equal({
@@ -53,10 +55,11 @@ describe('Shop Model', () => {
       it('handles multiple of the same item without duplicating object', async () => {
         items = ['soup', 'soup'];
         currency = 'USD';
+        args = { items, currency };
 
         scope = mockCurrencyRequest(currency, usdResponse);
 
-        order = await shop.buy(items, currency);
+        order = await shop.buy(args);
 
         expect(scope.isDone());
         expect(order).to.deep.equal({
@@ -73,10 +76,11 @@ describe('Shop Model', () => {
       it('applies discounts if item has offer', async () => {
         items = ['milk', 'milk', 'milk'];
         currency = 'USD';
+        args = { items, currency };
 
         scope = mockCurrencyRequest(currency, usdResponse);
 
-        order = await shop.buy(items, currency);
+        order = await shop.buy(args);
 
         expect(scope.isDone());
         expect(order).to.deep.equal({
@@ -90,10 +94,11 @@ describe('Shop Model', () => {
       it('does not apply discounts if item has no offer', async () => {
         items = ['soup'];
         currency = 'USD';
+        args = { items, currency };
 
         scope = mockCurrencyRequest(currency, usdResponse);
 
-        order = await shop.buy(items, currency);
+        order = await shop.buy(args);
 
         expect(order).to.deep.equal({
           subtotal: 0.65,
@@ -109,10 +114,11 @@ describe('Shop Model', () => {
       it('applies currency conversion on order', async () => {
         items = ['milk', 'milk', 'milk'];
         currency = 'GBP';
+        args = { items, currency };
 
         scope = mockCurrencyRequest(currency, gbpResponse);
 
-        order = await shop.buy(items, currency);
+        order = await shop.buy(args);
 
         expect(scope.isDone());
         expect(order).to.deep.equal({
@@ -125,37 +131,76 @@ describe('Shop Model', () => {
       });
     });
     context('argument validation', () => {
-      it('ensures item arguments are valid', async () => {
-        items = ['potato'];
+      it('ensures items are provided in request', async () => {
         currency = 'GBP';
+        args = { currency };
 
         scope = mockCurrencyRequest(currency, gbpResponse);
 
-        order = await shop.buy(items, currency);
-
-        expect(scope.isDone());
-        expect(order).to.deep.equal({
-          error: {
-            errorMessage: 'invalid argument provided',
-            errorType: 'BAD_REQUEST',
-          },
+        await shop.buy(args).catch((err) => {
+          expect(err).to.deep.equal({
+            error: {
+              errorMessage: 'no items provided in request',
+              errorType: 'BAD_REQUEST',
+              httpStatus: 422,
+            },
+          });
+          expect(scope.isDone());
         });
       });
-      it('ensures currency argument is valid', async () => {
+      it('ensures currency is provided in request', async () => {
         items = ['apple'];
-        currency = 'na';
+        args = { items };
 
         scope = mockCurrencyRequest(currency, gbpResponse);
 
-        order = await shop.buy(items, currency);
+        await shop.buy(args).catch((err) => {
+          expect(scope.isDone());
+          expect(err).to.deep.equal({
+            error: {
+              errorMessage: 'no currency provided in request',
+              errorType: 'BAD_REQUEST',
+              httpStatus: 422,
+            },
+          });
+        });
+      });
 
-        expect(scope.isDone());
-        expect(order).to.deep.equal({
+      it('ensures provided item is an accepted item', async () => {
+        items = ['potato'];
+        currency = 'GBP';
+        args = { items, currency };
+
+        scope = mockCurrencyRequest(currency, gbpResponse);
+
+        await shop.buy(args).catch((err) => {
+          expect(err).to.deep.equal({
+            error: {
+              errorMessage: 'item: "potato" is not a valid item',
+              errorType: 'BAD_REQUEST',
+              httpStatus: 422,
+            },
+          });
+          expect(scope.isDone());
+        });
+      });
+    });
+    it('ensures provided currency is an accepted currency', async () => {
+      items = ['apple'];
+      currency = 'MXN';
+      args = { items, currency };
+
+      scope = mockCurrencyRequest(currency, gbpResponse);
+
+      await shop.buy(args).catch((err) => {
+        expect(err).to.deep.equal({
           error: {
-            errorMessage: 'invalid argument provided',
+            errorMessage: 'currency: "MXN" is not an accepted currency',
             errorType: 'BAD_REQUEST',
+            httpStatus: 422,
           },
         });
+        expect(scope.isDone());
       });
     });
   });

@@ -2,13 +2,18 @@ const {
   argumentValidation, handleItems, convertOrder, formatOrder,
 } = require('./buy');
 
-exports.buy = async (items, currency) => {
-  const { isValid, errorMsg } = argumentValidation(items, currency);
-  if (!isValid) return errorMsg;
+exports.buy = async (data) => {
+  let finalisedOrder;
 
-  const order = handleItems(items);
-  const convertedOrder = await convertOrder(order, currency);
-  const finalisedOrder = formatOrder(convertedOrder);
+  try {
+    argumentValidation(data);
+    const { items, currency } = data;
+    const order = handleItems(items);
+    const convertedOrder = await convertOrder(order, currency);
+    finalisedOrder = formatOrder(convertedOrder);
+  } catch (err) {
+    throw err;
+  }
 
   return finalisedOrder;
 };

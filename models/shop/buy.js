@@ -1,58 +1,38 @@
 require('dotenv').config();
 const fetch = require('node-fetch');
 
-const catalog = {
-  apple: {
-    price: 1,
-    offer: {
-      type: 'percentage',
-      amountOff: 0.1,
-      minPurchase: 1,
-      name: '10% off apples',
+const { currencies, catalog } = require('./config');
+
+const argumentValidation = (data) => {
+  const errorMsg = {
+    error: {
+      errorMessage: undefined,
+      errorType: 'BAD_REQUEST',
+      httpStatus: 422,
     },
-  },
-  milk: {
-    price: 1.15,
-    offer: {
-      type: 'fixed',
-      amountOff: 0.5,
-      minPurchase: 3,
-      name: 'buy 3 milks, get 50c off',
-    },
-  },
-  bread: { price: 0.8 },
-  soup: { price: 0.65 },
-};
+  };
 
-const acceptedCurrencies = {
-  GBP: 'GBP',
-  EUR: 'EUR',
-  USD: 'USD',
-};
+  if (!data.items) {
+    errorMsg.error.errorMessage = 'no items provided in request';
+    throw errorMsg;
+  }
 
-const argumentValidation = (items, currency) => {
-  let isValid = true;
+  if (!data.currency) {
+    errorMsg.error.errorMessage = 'no currency provided in request';
+    throw errorMsg;
+  }
 
-  items.forEach((item) => {
+  data.items.forEach((item) => {
     if (!catalog[item]) {
-      isValid = false;
+      errorMsg.error.errorMessage = `item: "${item}" is not a valid item`;
+      throw errorMsg;
     }
   });
 
-  if (!Object.prototype.hasOwnProperty.call(acceptedCurrencies, currency)) {
-    isValid = false;
+  if (!Object.prototype.hasOwnProperty.call(currencies, data.currency)) {
+    errorMsg.error.errorMessage = `currency: "${data.currency}" is not an accepted currency`;
+    throw errorMsg;
   }
-
-  const errorMsg = {
-    error: {
-      errorMessage: 'invalid argument provided',
-      errorType: 'BAD_REQUEST',
-    },
-  };
-  return {
-    isValid,
-    errorMsg,
-  };
 };
 
 const handleDiscounts = (order, item) => {
@@ -90,8 +70,6 @@ const handleItems = (items) => {
     if (catalog[item].offer) {
       order = handleDiscounts(order, item);
     }
-
-    // console.log(order);
   });
 
   return order;

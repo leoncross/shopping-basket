@@ -43,7 +43,7 @@ describe('Shop controller', () => {
 
       shop.buy(req, res);
 
-      expect(shopModelBuyStub).calledOnceWith(items, currency);
+      expect(shopModelBuyStub).calledOnceWith(req.body);
     });
     it('passes back returned object from shopModel', async () => {
       items = ['bread'];

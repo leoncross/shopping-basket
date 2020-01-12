@@ -35,7 +35,7 @@ describe('Routes', () => {
         done(err);
       });
   });
-  it('with invalid params returns 200 and an error object', (done) => {
+  it('with invalid params returns 422 and an error object', (done) => {
     const items = ['pear', 'potato'];
     const currency = 'EUR';
 
@@ -48,11 +48,12 @@ describe('Routes', () => {
       .send({ items, currency })
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(200)
+      .expect(422)
       .expect({
         error: {
-          errorMessage: 'invalid argument provided',
+          errorMessage: 'item: "pear" is not a valid item',
           errorType: 'BAD_REQUEST',
+          httpStatus: 422,
         },
       })
       .end((err) => {

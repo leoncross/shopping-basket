@@ -83,7 +83,6 @@ In an open terminal, type the following:
 git clone https://github.com/leoncross/shopping-basket.git
 cd shopping-basket
 npm install
-
 ```
 
 # <a name="how_to_run_tests">How to run the tests</a>:
@@ -93,13 +92,11 @@ In the shopping-basket directory, type the following into a terminal:
 npm run test:unit
 npm run test:feature
 npm run test:e2e
-
 ```
 
 To check for code quality and test coverage:
 ```
 npm run coverage
-
 ```
 
 # <a name="how_to_run_the_app">How to run the app</a>:
@@ -111,7 +108,6 @@ After cloning this repo and navigating to the created directory, type the follow
 
 ```
 node index.js
-
 ```
 
 From here, load up Postman and create a POST request to http://localhost:8080/shop/buy

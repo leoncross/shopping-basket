@@ -75,7 +75,7 @@ eslint
 grunt
 
 ```
-# <a name="installation">Installation</a>:
+# <a name="installation">Installation and Configuration</a>:
 
 In an open terminal, type the following:
 
@@ -83,6 +83,17 @@ In an open terminal, type the following:
 git clone https://github.com/leoncross/shopping-basket.git
 cd shopping-basket
 npm install
+```
+
+As this project uses an API key from CurrencyLayer, please sign up for a key at the following address: https://currencylayer.com/product
+
+You will need to add your key to the project; this is done by creating your own .env file in the root of this application:
+
+```
+//replace keygoeshere with your own API_KEY.
+
+touch .env && echo "API_KEY=keygoeshere" >> .env
+
 ```
 
 # <a name="how_to_run_tests">How to run the tests</a>:

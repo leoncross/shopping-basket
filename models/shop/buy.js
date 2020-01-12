@@ -1,7 +1,7 @@
 require('dotenv').config();
 const fetch = require('node-fetch');
 
-const { catalog } = require('./config');
+const { catalog } = require('./shopConfig');
 
 const handleDiscounts = (order, item) => {
   if (order[item].count % catalog[item].offer.minPurchase === 0) {

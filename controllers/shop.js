@@ -1,4 +1,4 @@
-const shopModel = require('../models/shop/shop');
+const shopModel = require('../models/shop/index');
 
 exports.buy = async (req, res) => {
   try {

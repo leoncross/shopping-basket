@@ -5,7 +5,7 @@ const chai = require('chai').use(sinonChai);
 const { expect } = chai;
 
 const shop = require('../../../controllers/shop');
-const shopModel = require('../../../models/shop/shop');
+const shopModel = require('../../../models/shop/index');
 
 describe('Shop controller', () => {
   let res;

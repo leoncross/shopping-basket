@@ -1,4 +1,4 @@
-const { currencies, catalog } = require('./config');
+const { currencies, catalog } = require('./shopConfig');
 
 const errorMsg = {
   error: {
